@@ -8,11 +8,14 @@ public class GameManager : MonoBehaviour
     
     private DetectionZone detectionZone;
     private UIManager uiManager;
+    private BGMPlayer bgmPlayer;
+    private ScreenManager screenManager;
     private static GameManager instance;
     
     private int successfulBows = 0; // 成功敬茶的数量
     private int missedDogs = 0; // 错过的狗狗数量
     private bool isGameOver = false;
+    private bool isGameActive = false; // Title/End时为false
 
     private void Awake()
     {
@@ -39,11 +42,14 @@ public class GameManager : MonoBehaviour
         {
             uiManager.UpdateScore(successfulBows, missedDogs, maxMissedDogs);
         }
+        
+        bgmPlayer = FindFirstObjectByType<BGMPlayer>();
+        screenManager = FindFirstObjectByType<ScreenManager>();
     }
 
     public void OnPlayerBow()
     {
-        if (isGameOver || detectionZone == null) return;
+        if (!IsGameActive() || detectionZone == null) return;
 
         // 检查是否有狗狗在检测区域内
         if (detectionZone.HasDogsInZone())
@@ -71,7 +77,7 @@ public class GameManager : MonoBehaviour
 
     public void OnDogMissed()
     {
-        if (isGameOver) return;
+        if (!IsGameActive()) return;
         
         missedDogs++;
         
@@ -92,6 +98,7 @@ public class GameManager : MonoBehaviour
     private void EndGame()
     {
         isGameOver = true;
+        isGameActive = false;
         
         // 停止生成新的狗狗
         DogSpawner spawner = FindFirstObjectByType<DogSpawner>();
@@ -100,9 +107,16 @@ public class GameManager : MonoBehaviour
             spawner.enabled = false;
         }
         
-        if (uiManager != null)
+        // 停止BGM
+        if (bgmPlayer != null)
         {
-            uiManager.ShowGameOver(successfulBows);
+            bgmPlayer.StopBGM();
+        }
+
+        // 切换到结束画面（图片）
+        if (screenManager != null)
+        {
+            screenManager.ShowEndScreen();
         }
         
         Debug.Log($"游戏结束！你成功给 {successfulBows} 只狗狗敬茶了！");
@@ -111,5 +125,58 @@ public class GameManager : MonoBehaviour
     public bool IsGameOver()
     {
         return isGameOver;
+    }
+
+    public bool IsGameActive()
+    {
+        return isGameActive && !isGameOver;
+    }
+
+    // 获取最终分数（用于End Screen显示）
+    public int GetFinalScore()
+    {
+        return successfulBows;
+    }
+
+    // Title 按空格开始时调用
+    public void StartNewRun()
+    {
+        isGameOver = false;
+        isGameActive = true;
+        successfulBows = 0;
+        missedDogs = 0;
+
+        // 重新启用生成器
+        DogSpawner spawner = FindFirstObjectByType<DogSpawner>();
+        if (spawner != null)
+        {
+            spawner.enabled = true;
+        }
+
+        if (uiManager != null)
+        {
+            uiManager.UpdateScore(successfulBows, missedDogs, maxMissedDogs);
+        }
+    }
+
+    // 任何时候按 R 回到 Title 时调用
+    public void ResetToTitle()
+    {
+        isGameActive = false;
+        isGameOver = false;
+        successfulBows = 0;
+        missedDogs = 0;
+
+        // 停止生成器（防止在Title时误生成）
+        DogSpawner spawner = FindFirstObjectByType<DogSpawner>();
+        if (spawner != null)
+        {
+            spawner.enabled = false;
+        }
+
+        if (uiManager != null)
+        {
+            uiManager.UpdateScore(successfulBows, missedDogs, maxMissedDogs);
+        }
     }
 }

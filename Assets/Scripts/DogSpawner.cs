@@ -14,6 +14,10 @@ public class DogSpawner : MonoBehaviour
     [SerializeField] private float spawnX = 10f; // 屏幕右侧
     [SerializeField] private float spawnY = 2f; // 屏幕上半边
     
+    [Header("Turn Point")]
+    [SerializeField] private float turnPointX = 0f; // 转折点的X坐标
+    [SerializeField] private Vector3 turnDirection = Vector3.down; // 转折后的移动方向（例如：Vector3.down向下，Vector3.up向上）
+    
     private float currentSpeed;
     private float nextSpawnTime;
     private int dogCount = 0;
@@ -27,11 +31,11 @@ public class DogSpawner : MonoBehaviour
 
     private void Update()
     {
-        // 检查游戏是否结束
+        // 检查游戏是否进行中（Title/End 时不生成）
         GameManager gameManager = FindFirstObjectByType<GameManager>();
-        if (gameManager != null && gameManager.IsGameOver())
+        if (gameManager != null && !gameManager.IsGameActive())
         {
-            return; // 游戏结束，停止生成
+            return;
         }
 
         if (Time.time >= nextSpawnTime)
@@ -53,11 +57,12 @@ public class DogSpawner : MonoBehaviour
         Vector3 spawnPosition = new Vector3(spawnX, spawnY, 0f);
         GameObject newDog = Instantiate(dogPrefab, spawnPosition, Quaternion.identity);
         
-        // 设置狗狗的速度
+        // 设置狗狗的速度和转折点
         DogController dogController = newDog.GetComponent<DogController>();
         if (dogController != null)
         {
             dogController.SetSpeed(currentSpeed);
+            dogController.SetTurnPoint(turnPointX, turnDirection);
         }
 
         // 增加速度（但不超过最大速度）

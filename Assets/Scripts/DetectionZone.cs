@@ -6,6 +6,7 @@ public class DetectionZone : MonoBehaviour
     [Header("Zone Settings")]
     [SerializeField] private float zoneWidth = 2f;
     [SerializeField] private float zoneHeight = 2f;
+    [SerializeField] private bool autoPositionAtStart = false; // 是否在开始时自动定位到屏幕中间
     
     private List<DogController> dogsInZone = new List<DogController>();
     private List<DogController> dogsThatEnteredZone = new List<DogController>(); // 记录进入过区域的狗狗
@@ -15,26 +16,30 @@ public class DetectionZone : MonoBehaviour
     {
         gameManager = FindFirstObjectByType<GameManager>();
         
-        // 设置检测区域在屏幕中间（上半部分）
-        Camera mainCamera = Camera.main;
-        if (mainCamera != null)
+        // 如果启用自动定位，则设置检测区域在屏幕中间（上半部分）
+        if (autoPositionAtStart)
         {
-            // 计算屏幕中间偏上的位置（上半部分）
-            float centerX = Screen.width / 2f;
-            float centerY = Screen.height * 0.75f; // 屏幕上半部分的75%位置
-            
-            Vector3 centerPosition = mainCamera.ScreenToWorldPoint(new Vector3(centerX, centerY, mainCamera.nearClipPlane + 10f));
-            centerPosition.z = 0f;
-            transform.position = centerPosition;
+            Camera mainCamera = Camera.main;
+            if (mainCamera != null)
+            {
+                // 计算屏幕中间偏上的位置（上半部分）
+                float centerX = Screen.width / 2f;
+                float centerY = Screen.height * 0.75f; // 屏幕上半部分的75%位置
+                
+                Vector3 centerPosition = mainCamera.ScreenToWorldPoint(new Vector3(centerX, centerY, mainCamera.nearClipPlane + 10f));
+                centerPosition.z = 0f;
+                transform.position = centerPosition;
+            }
         }
+        // 如果不启用自动定位，使用GameObject的Transform位置（可以在Inspector中手动设置）
     }
 
     private void Update()
     {
-        // 检查游戏是否结束
-        if (gameManager != null && gameManager.IsGameOver())
+        // 检查是否在游戏进行中（Title/End 时停止检测）
+        if (gameManager != null && !gameManager.IsGameActive())
         {
-            return; // 游戏结束，停止检测
+            return;
         }
 
         // 检查哪些狗狗在区域内

@@ -28,7 +28,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 5, y: 5, z: 5}
+  m_LocalScale: {x: 0.3, y: 0.3, z: 0.3}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -82,12 +82,12 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 5821448090273145131, guid: bcfaf2452119b964db74a4a988e65205, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 035d4ad949b56b640b108f4c3a667e88, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 8.77, y: 11.66}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -105,5 +105,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DogController
   speed: 2
-  normalSprite: {fileID: 5821448090273145131, guid: bcfaf2452119b964db74a4a988e65205, type: 3}
-  happySprite: {fileID: 3612292516526421599, guid: fccf269a3d9b5f94ead1684dfc82f23a, type: 3}
+  dogSpriteSets:
+  - normalSprite: {fileID: 21300000, guid: 035d4ad949b56b640b108f4c3a667e88, type: 3}
+    happySprite: {fileID: 2516463173890574039, guid: fab1740d4314b164aa66b07a0bb68a92, type: 3}
+    angrySprite: {fileID: 21300000, guid: ef4b66923c1f53e4d8131c284163047c, type: 3}
+  - normalSprite: {fileID: 21300000, guid: e7fd84fb6ec6bed429bca519ad6dfb89, type: 3}
+    happySprite: {fileID: 4294232626109087404, guid: 78f342e714320b542a95b77de82750a9, type: 3}
+    angrySprite: {fileID: 21300000, guid: 64bd7dec2e6c3af47b87ce61558bc069, type: 3}
+  - normalSprite: {fileID: 21300000, guid: fda842ac534d80541b6885d55d332787, type: 3}
+    happySprite: {fileID: 5414392958042500490, guid: 14e522eda2768e342b8505167a05d955, type: 3}
+    angrySprite: {fileID: 21300000, guid: 50b6d219c28b4ba47a41eff9bf4cf41a, type: 3}
+  happySoundEffect: {fileID: 8300000, guid: 857463402919ed3459fc0f4830e5f3e3, type: 3}

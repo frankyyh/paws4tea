@@ -47,10 +47,10 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
-        // 检查游戏是否结束
-        if (gameManager != null && gameManager.IsGameOver())
+        // 检查是否在游戏进行中（Title/End 时不接受输入）
+        if (gameManager != null && !gameManager.IsGameActive())
         {
-            return; // 游戏结束，不接受输入
+            return;
         }
 
         // 处理鞠躬动画
